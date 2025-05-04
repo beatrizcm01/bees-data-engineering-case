@@ -349,7 +349,6 @@ services:
 
 # Nessie Catalog Server Using In-Memory Store
 
-services:
   nessie:
     image: projectnessie/nessie:latest
     container_name: nessie
