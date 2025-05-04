@@ -16,3 +16,6 @@ parquet or delta, and partitioned by brewery location.
 # Pipeline Architecture
 
 This project runs AirFlow in a Docker container in order to orchestrate the OpenBreweryDB data pipeline. The DAG in Airflow extracts the data from the API and populate it into the layers. The data is persisted into S3 buckets as parquet files. A virtualization layer is created with Dremio which connects to S3 and formats the parquet files as tables. A view is created on top of the silver layer with SQL.
+
+![diagram](architecture_diagram.png)
+
