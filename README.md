@@ -4,3 +4,15 @@ The goal of this case is to extract data from the [Open Brewery DB ](https://www
 - Silver Layer: The data is transformed into a columnar storage format such as
 parquet or delta, and partitioned by brewery location. 
 - Gold Layer: The data is then aggregated  as a view with the quantity of breweries per type and location.
+
+# Technologies involved: 
+
+- Docker
+- Airflow
+- PySpark
+- AWS S3
+- Dremio
+
+# Pipeline Architecture
+
+This project runs AirFlow in a Docker container in order to orchestrate the OpenBreweryDB data pipeline. The DAG in Airflow runs the tasks: run_bronze_layer_scripts >> run_silver_layer_scripts >> run_gold_layer_scripts. It extracts data from the API, persists it as parquet files into openbrewerydb-bronze-layer bucket, transforms it and stores it into openbrewerydb-silver-layer bucket as parquet files partiotioned by location (country, region). A virtualization layer is created with Dremio which connects to S3 and formats the parquet files as tables. A view is created on top of the silver layer with SQL.
