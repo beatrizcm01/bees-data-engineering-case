@@ -347,6 +347,17 @@ services:
       - dremio-data:/opt/dremio/data
       - dremio-conf:/opt/dremio/conf
 
+# Nessie Catalog Server Using In-Memory Store
+
+services:
+  nessie:
+    image: projectnessie/nessie:latest
+    container_name: nessie
+    networks:
+      de-end-to-end:
+    ports:
+      - 19120:19120
+
 volumes:
   postgres-db-volume:
   dremio-data:
