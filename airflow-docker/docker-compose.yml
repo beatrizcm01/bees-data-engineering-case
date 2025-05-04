@@ -349,13 +349,19 @@ services:
 
 # Nessie Catalog Server Using In-Memory Store
 
+  # Nessie Catalog Server Using In-Memory Store
   nessie:
-    image: projectnessie/nessie:latest
-    container_name: nessie
-    networks:
-      de-end-to-end:
+    image: projectnessie/nessie
+    container_name: catalog
     ports:
       - 19120:19120
+
+# === Add Network
+networks:
+  default:
+    name: iceberg_env
+    driver: bridge
+# >>> End
 
 volumes:
   postgres-db-volume:
