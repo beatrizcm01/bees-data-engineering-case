@@ -1,0 +1,6 @@
+pyspark
+requests
+boto3
+awscli
+apache-airflow 
+pendulum

@@ -1,0 +1,3 @@
+/.venv
+/airflow-docker/.aws
+/airflow-docker/logs/
