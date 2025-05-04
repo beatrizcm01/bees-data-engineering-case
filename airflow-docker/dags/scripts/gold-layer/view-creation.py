@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import count
 from datetime import datetime
+from plugins.data_quality import check_ids
 import logging
 
 # passes parameters to fetch data from S3
@@ -25,6 +26,12 @@ spark = SparkSession.builder \
 logging.info(f"Reading data from {origin_bucket_name}")
 
 df = spark.read.parquet(f"s3a://{origin_bucket_name}/{folder_name}/")
+
+logging.info("Performing a data quality check.")
+
+# Checking ids for inconsistency
+
+check_ids(df)
 
 # Performing aggregation per location and brewery type
 

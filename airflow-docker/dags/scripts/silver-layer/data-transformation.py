@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, when, coalesce, concat_ws, lit
+from pyspark.sql.functions import col, when, coalesce, concat_ws, lit, count
 from datetime import datetime
+from plugins.data_quality import check_ids
 import logging
 
 logging.basicConfig(
@@ -37,18 +38,27 @@ df = spark.read.parquet(f"s3a://{origin_bucket_name}/{folder_name}")
 
 # transforms the DataFrame
 """
-    Region: coalesces the values from state_province and state
+    - Region: coalesces the values from state_province and state
     since they have the same values throughout the DataFrame and are redundant.
     The column region can then refer to either a state province or state,
     depending on the country.
-    Address_1: coalesces values from columns address_1 and street, since
+    - Address_1: coalesces values from columns address_1 and street, since
     it was verified they also refer to the same values and were redudant.
-    Address_2: concats values from address_2 and address_3, since it's an 
+    - Address_2: concats values from address_2 and address_3, since it's an 
     optional address complement and had a lot of NULL values in both columns.
+    - A dropDuplicates was performed to ensure the quality of the dataset.
 """
+
+logging.info("Performing a data quality check.")
+
+# Checking ids for inconsistency
+
+check_ids(df)
+
 logging.info("Starting to transform the data.")
 
 transformed_df = df \
+    .df.dropDuplicates() \
     .filter(col("address_2").isNotNull()) \
     .withColumn("address_2", 
         when(
