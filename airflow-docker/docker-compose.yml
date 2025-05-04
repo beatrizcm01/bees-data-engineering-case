@@ -332,5 +332,22 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+# Add Lakehouse services
+  dremio:
+    platform: linux/x86_64
+    image: dremio/dremio-oss:25.2
+    ports:
+      - 9047:9047
+      - 31010:31010
+      - 32010:32010
+    container_name: dremio
+    environment:
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
+    volumes:
+      - dremio-data:/opt/dremio/data
+      - dremio-conf:/opt/dremio/conf
+
 volumes:
   postgres-db-volume:
+  dremio-data:
+  dremio-conf:
