@@ -67,11 +67,9 @@ transformed_df = df \
 """
 
 # partition the transformed DataFrame by location
-# save it as a spark delta table
 # stores it into S3 silver bucket
 
 partitioned_by_location_df = transformed_df.repartition("country", "region")
-partitioned_by_location_df.write.format("parquet").saveAsTable("tb_openbrewerydb_silver")
 partitioned_by_location_df \
     .write.partitionBy("country", "region") \
         .parquet(f"s3a://{destination_bucket_name}/{folder_name}",

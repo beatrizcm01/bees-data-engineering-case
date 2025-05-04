@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import subprocess
 import os
 
-# Run script to extract data and persist it raw into S3 bucket 
+# Runs script to extract data and persist it raw into S3 bucket 
 
 @dag(
     schedule='@daily',  # Run every day at midnight
@@ -18,14 +18,22 @@ def run_dataflow_dag():
         script_path = os.path.join(os.path.dirname(__file__), 'scripts/bronze-layer', 'data-extraction.py')
         subprocess.run(['python', script_path], check=True)
 
-    # Run script that transforms data from bronze layer and load it into silver S3 bucket
+    # Runs script that transforms data from bronze layer and load it into silver S3 bucket
 
     @task
     def run_silver_layer_script():
         script_path = os.path.join(os.path.dirname(__file__), 'scripts/silver-layer', 'data-transformation.py')
+        subprocess.run(['python', script_path], check=True)
+
+    # Runs script that aggreates data into a view and stores it into gold S3 bucket 
+
+    @task
+    def run_gold_layer_script():
+        script_path = os.path.join(os.path.dirname(__file__), 'scripts/gold-layer', 'view-creation.py')
         subprocess.run(['python', script_path], check=True) 
+     
     
-    chain(run_bronze_layer_script(), run_silver_layer_script())
+    chain(run_bronze_layer_script(), run_silver_layer_script(), run_gold_layer_script())
 
 dag_instance = run_dataflow_dag()
 

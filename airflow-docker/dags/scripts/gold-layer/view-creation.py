@@ -25,9 +25,7 @@ df = spark.read.parquet(f"s3a://{origin_bucket_name}/{folder_name}/")
 
 brewery_agg_vw = df.groupBy("brewery_type", "country", "region").agg(count("id").alias("brewery_count")).show()
 
-# Saving view in Delta Lake
 # Storing data in S3
 
-brewery_agg_vw.write.format("parquet").saveAsTable("vw_openbrewerydb_gold")
 brewery_agg_vw.write.parquet(f"s3a://{destination_bucket_name}/{folder_name}",
                  mode='overwrite')
