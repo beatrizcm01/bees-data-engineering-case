@@ -30,7 +30,7 @@ cd bees-data-engineering-case
 
 Then you need to have Docker Desktop installed. With Docker ready to go, navigate to the airflow-docker folder in this repo and initialize it:
 
-```docker-compose up --build```
+``docker-compose up --build``
 
 ## Improvement Points
 
