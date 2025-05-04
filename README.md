@@ -25,12 +25,16 @@ This project runs AirFlow in a Docker container in order to orchestrate the Open
 
 To run the contents in this project, first you need to clone the repo as follows:
 
+```
 git clone https://github.com/beatrizcm01/bees-data-engineering-case.git
 cd bees-data-engineering-case
+```
 
 Then you need to have Docker Desktop installed. With Docker ready to go, navigate to the airflow-docker folder in this repo and initialize it:
 
-``docker-compose up --build``
+```
+docker-compose up --build
+```
 
 ## Improvement Points
 
