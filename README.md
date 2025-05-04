@@ -22,7 +22,7 @@ This project runs AirFlow in a Docker container in order to orchestrate the Open
 
 ![diagram](architecture_diagram.png)
 
-> :warning:  Note: the Dremio integration was not fully implemented, but the image was built in the Docker Container and and the instance was connected to my S3 bucket. I virtualized the bronze and silver layers formatting it as tables from the parquet files. I then proceeded to create a view on top of the silver layer table with Dremio's SQL engine and stored it as a view.
+> :warning:  Note: the Dremio integration was not fully implemented, but the image is included in the Docker Container (commented) and the instance was connected to my S3 bucket. I virtualized the bronze and silver layers formatting it as tables from the parquet files. I then proceeded to create a view on top of the silver layer table with Dremio's SQL engine and stored it as a view. It is currently commented because I was facing some memory issues.
 
 ## Tutorial 
 
