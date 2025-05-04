@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import count
 from datetime import datetime
+import logging
 
 # passes parameters to fetch data from S3
 
@@ -9,6 +10,8 @@ destination_bucket_name = 'openbrewerydb-gold-layer'
 origin_bucket_name = 'openbrewerydb-silver-layer'
 
 # Creates spark session
+
+logging.info("Trying to create a Spark Session.")
 
 spark = SparkSession.builder \
     .appName("DataFrame") \
@@ -19,13 +22,23 @@ spark = SparkSession.builder \
 
 # Reading data into DataFrame
 
+logging.info(f"Reading data from {origin_bucket_name}")
+
 df = spark.read.parquet(f"s3a://{origin_bucket_name}/{folder_name}/")
 
 # Performing aggregation per location and brewery type
+
+logging.info("Creating aggregated view.")
 
 brewery_agg_vw = df.groupBy("brewery_type", "country", "region").agg(count("id").alias("brewery_count")).show()
 
 # Storing data in S3
 
+logging.info(f"Storing the data in {destination_bucket_name}.")
+
 brewery_agg_vw.write.parquet(f"s3a://{destination_bucket_name}/{folder_name}",
                  mode='overwrite')
+
+logging.info("Data persisted with success.")
+
+spark.stop()

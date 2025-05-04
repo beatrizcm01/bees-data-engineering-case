@@ -1,6 +1,15 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, when, coalesce, concat_ws, lit
 from datetime import datetime
+import logging
+
+logging.basicConfig(
+     filename='log_file_name.log',
+     level=logging.INFO, 
+     format= '[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+     datefmt='%H:%M:%S'
+ )
+
 
 # gets the folder name based on the current date (date of extraction)
 # passes the origin and destination bucket names
@@ -11,6 +20,8 @@ destination_bucket_name = 'openbrewerydb-silver-layer'
 
 # sets Spark Session
 
+logging.info("Trying to create a Spark Session.")
+
 spark = SparkSession.builder \
     .appName("DataFrame") \
     .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.520") \
@@ -19,6 +30,8 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # reads parquet into DataFrame
+
+logging.info(f"Reading parquet from {origin_bucket_name} bucket.")
 
 df = spark.read.parquet(f"s3a://{origin_bucket_name}/{folder_name}")
 
@@ -33,6 +46,7 @@ df = spark.read.parquet(f"s3a://{origin_bucket_name}/{folder_name}")
     Address_2: concats values from address_2 and address_3, since it's an 
     optional address complement and had a lot of NULL values in both columns.
 """
+logging.info("Starting to transform the data.")
 
 transformed_df = df \
     .filter(col("address_2").isNotNull()) \
@@ -63,14 +77,21 @@ transformed_df = df \
 
 """
     Since the database has various location-related columns, the granularity chosen
-    was to partition it by country and region.
+    was to partition it by country and region, which can be important dimensions in 
+    terms of analytics.
 """
 
 # partition the transformed DataFrame by location
 # stores it into S3 silver bucket
+
+logging.info(f"Partiotioning data by location and writing it into {destination_bucket_name}")
 
 partitioned_by_location_df = transformed_df.repartition("country", "region")
 partitioned_by_location_df \
     .write.partitionBy("country", "region") \
         .parquet(f"s3a://{destination_bucket_name}/{folder_name}",
                  mode='overwrite')
+
+logging.info("Data persisted with success.")
+
+spark.stop()

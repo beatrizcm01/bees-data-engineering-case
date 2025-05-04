@@ -49,7 +49,7 @@ def fetch_data(current_page_number: int):
             raw = response.json()  
 
             end_time = time.time() - start_time
-            print(f'Fetched data for page {current_page_number}. \nRunning time: {end_time}s.')
+            logging.info(f'Fetched data for page {current_page_number}. \nRunning time: {end_time}s.')
 
             if len(raw) != 0:
                 current_page_number = current_page_number + 1
@@ -57,7 +57,6 @@ def fetch_data(current_page_number: int):
             
             print(f'There is no data for page {current_page_number}. Extracting process finalized.')
             print(f'Max number of pages retrieved: {current_page_number -1}')
-            logging.info("Data extraction completed successfully.")
 
             return raw 
         except Exception as e:
@@ -70,6 +69,7 @@ raw_data = fetch_data(1)
 
 # creates a Spark Session with the necessary parameters
 
+logging.info("Trying to create a SparkSession")
 
 spark = SparkSession.builder \
     .appName("DataFrame") \
@@ -89,6 +89,8 @@ df = spark.createDataFrame(Row(**x) for x in raw_data)
 
 # connects to AWS S3 client
 
+logging.info("Trying to connect to S3 client.")
+
 client = boto3.client('s3')
 
 # writes the extracted data as a parquet file into a folder with the date of its extraction
@@ -97,4 +99,4 @@ logging.info("Starting to compile data into S3 bucket.")
 
 df.write.parquet(f"s3a://openbrewerydb-bronze-layer/{date_of_extraction}", mode="overwrite")
 
-logging.info("Data inserted with success!")
+logging.info("Data persisted with success.")
