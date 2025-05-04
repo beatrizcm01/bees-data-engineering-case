@@ -15,4 +15,4 @@ parquet or delta, and partitioned by brewery location.
 
 # Pipeline Architecture
 
-This project runs AirFlow in a Docker container in order to orchestrate the OpenBreweryDB data pipeline. The DAG in Airflow runs the tasks: run_bronze_layer_scripts >> run_silver_layer_scripts >> run_gold_layer_scripts. It extracts data from the API, persists it as parquet files into openbrewerydb-bronze-layer bucket, transforms it and stores it into openbrewerydb-silver-layer bucket as parquet files partiotioned by location (country, region). A virtualization layer is created with Dremio which connects to S3 and formats the parquet files as tables. A view is created on top of the silver layer with SQL.
+This project runs AirFlow in a Docker container in order to orchestrate the OpenBreweryDB data pipeline. The DAG in Airflow extracts the data from the API and populate it into the layers. The data is persisted into S3 buckets as parquet files. A virtualization layer is created with Dremio which connects to S3 and formats the parquet files as tables. A view is created on top of the silver layer with SQL.
