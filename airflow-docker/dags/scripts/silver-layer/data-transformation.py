@@ -1,8 +1,10 @@
+import logging, sys, os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, when, coalesce, concat_ws, lit, count
 from datetime import datetime
-from plugins.data_quality import check_ids
-import logging
+
+sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'quality')))
+from data_quality import check_ids
 
 logging.basicConfig(
      filename='log_file_name.log',

@@ -1,10 +1,15 @@
+import logging, sys, os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import count
 from datetime import datetime
-from plugins.data_quality import check_ids
-import logging
+
+# sys.path.append(os.path.abspath('../quality'))
+sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'quality')))
+from data_quality import check_ids
+# import data_quality
 
 # passes parameters to fetch data from S3
+logging.info("Begin.")
 
 folder_name = datetime.today().strftime('%Y-%m-%d')
 destination_bucket_name = 'openbrewerydb-gold-layer'
@@ -37,7 +42,7 @@ check_ids(df)
 
 logging.info("Creating aggregated view.")
 
-brewery_agg_vw = df.groupBy("brewery_type", "country", "region").agg(count("id").alias("brewery_count")).show()
+brewery_agg_vw = df.groupBy("brewery_type", "country", "region").agg(count("id").alias("brewery_count"))
 
 # Storing data in S3
 
