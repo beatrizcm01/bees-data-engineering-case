@@ -347,22 +347,6 @@ services:
       - dremio-data:/opt/dremio/data
       - dremio-conf:/opt/dremio/conf
 
-# Nessie Catalog Server Using In-Memory Store
-
-#   # Nessie Catalog Server Using In-Memory Store
-#   nessie:
-#     image: projectnessie/nessie
-#     container_name: catalog
-#     ports:
-#       - 19120:19120
-
-# # === Add Network
-# networks:
-#   default:
-#     name: iceberg_env
-#     driver: bridge
-# # >>> End
-
 # Volumes
 volumes:
   dremio-data:
