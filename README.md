@@ -41,10 +41,10 @@ docker-compose up --build
 Once you have the docker container up and running you should be able to access AirFlow and Dremio via:
 
 ```
-*AirFlow:* http://localhost:8080/
+AirFlow: http://localhost:8080/
 ```
 ```
-*Dremio:* http://localhost:9047/
+Dremio: http://localhost:9047/
 ```
 
 The layers can be consumed directly from S3 with PySpark. They'll be available in Dremio Lakehouse in a future implementation.
